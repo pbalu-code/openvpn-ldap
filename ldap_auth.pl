@@ -24,10 +24,19 @@ my $password = $ENV{'password'};
 
 openlog($ourname, 'nofatal,pid', $facility);
 
+# filter can/should be customized
 my @filter = ( "(sAMAccountName=${username})",
                "(memberOf=cn=${vpngroup},${basedn})",
                '(accountStatus=active)',
              );
+
+# using userAccountControl seems to work better at detecting active users
+# see https://github.com/waldner/openvpn-ldap/commit/9f2d0e835514f0aecc6cbb31a7dabe6367d410bf#comments
+# Thanks to https://github.com/smanross
+# my @filter = ( "(sAMAccountName=${username})",
+#               "(memberOf=cn=${vpngroup},${basedn})",
+#               '(!(userAccountControl:1.2.840.113556.1.4.803:=2))',
+#             );
 
 # bind as the authenticating user
 my $bindname = $username . '@' . $domain;
