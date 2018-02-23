@@ -39,7 +39,8 @@ query[11]="ldap://${ldapserver}.${domain}"
 query[12]="(&(sAMAccountName=${username})(memberOf=cn=${vpngroup},${basedn})(accountStatus=active))"
 # using userAccountControl seems to work better at detecting active users
 # see https://github.com/waldner/openvpn-ldap/commit/9f2d0e835514f0aecc6cbb31a7dabe6367d410bf#comments
-# query[12]="(&(sAMAccountName=${username})(memberOf=cn=${vpngroup},${basedn})(!(userAccountControl:1.2.840.113556.1.4.803:=2))    )"
+# Thanks to https://github.com/smanross
+# query[12]="(&(sAMAccountName=${username})(memberOf=cn=${vpngroup},${basedn})(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"
 
 query[13]='dn'
 
