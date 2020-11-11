@@ -12,8 +12,9 @@ use File::Basename;
 my $facility = LOG_AUTH;
 my $ourname = $ARGV[0];
 
-my $cfg = Config::IniFiles->new( -file => ${dirname}.${ARGV[1]} );
 my $dirname = dirname(__FILE__);
+my $cfg = Config::IniFiles->new( -file => ${dirname}.${ARGV[1]} );
+
 my $ldapserver = $cfg->val( 'LDAP', 'LDAPSERVER' );
 my $domain = $cfg->val( 'LDAP', 'DOMAIN' );
 my $vpngroup = $cfg->val( 'LDAP', 'VPNGROUP' );
