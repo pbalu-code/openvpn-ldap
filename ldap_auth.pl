@@ -13,7 +13,7 @@ my $facility = LOG_AUTH;
 my $ourname = $ARGV[0];
 
 my $dirname = dirname(__FILE__);
-my $cfg = Config::IniFiles->new( -file => ${dirname}.${ARGV[1]} );
+my $cfg = Config::IniFiles->new( -file => ${dirname}."perl-auth-ldap.conf" );
 
 my $ldapserver = $cfg->val( 'LDAP', 'LDAPSERVER' );
 my $domain = $cfg->val( 'LDAP', 'DOMAIN' );
