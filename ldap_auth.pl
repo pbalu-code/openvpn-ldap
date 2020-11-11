@@ -6,17 +6,22 @@ use strict;
 use Sys::Syslog qw(:standard :macros);
 use Net::LDAP;
 
-my $facility = LOG_AUTH;
-my $ourname = 'ldap_auth.pl';
+use Config::IniFiles;
+use File::Basename;
 
-my $ldapserver = 'windowsdc';
-my $domain = 'example.com';
-my $vpngroup = 'vpnauth';
+my $facility = LOG_AUTH;
+my $ourname = $ARGV[0];
+
+my $cfg = Config::IniFiles->new( -file => ${dirname}.${ARGV[1]} );
+my $dirname = dirname(__FILE__);
+my $ldapserver = $cfg->val( 'LDAP', 'LDAPSERVER' );
+my $domain = $cfg->val( 'LDAP', 'DOMAIN' );
+my $vpngroup = $cfg->val( 'LDAP', 'VPNGROUP' );
 
 # base DN for the search; adjust the code if the vpn group isn't directly in here.
-my $basedn = 'ou=Users,dc=example,dc=com';
+my $basedn = $cfg->val( 'LDAP', 'BASEDN' );
 
-my $ldap_uri = "ldap://${ldapserver}.${domain}";
+my $ldap_uri = $cfg->val( 'LDAP', 'LDAPSERVER' );
 
 # these are passed by OpenVPN
 my $username = $ENV{'username'};
@@ -24,11 +29,18 @@ my $password = $ENV{'password'};
 
 openlog($ourname, 'nofatal,pid', $facility);
 
-# filter can/should be customized
+if ($cfg->val( 'LDAP', 'LDAPSERVER') eq "LDAP") {
+# filter
+my @filter = ( "(uid=${username})",
+               "(memberOf=${vpngroup})",
+              );
+} else {
 my @filter = ( "(sAMAccountName=${username})",
-               "(memberOf=cn=${vpngroup},${basedn})",
+               "(memberOf=${vpngroup})",
                '(accountStatus=active)',
              );
+
+}
 
 # using userAccountControl seems to work better at detecting active users
 # see https://github.com/waldner/openvpn-ldap/commit/9f2d0e835514f0aecc6cbb31a7dabe6367d410bf#comments

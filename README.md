@@ -23,7 +23,7 @@ This version, of course, needs the ldapsearch tool (under Debian, part of the **
 In both cases, the OpenVPN server needs to be told about the script and to use it with the option
 
 ```
-auth-user-pass-verify /path/to/the/script via-env
+auth-user-pass-verify /etc/openvpn/ldap_auth.pl ldap_auth.conf via-env
 ```
 
 The **via-env** bit is what tells OpenVPN to pass the user credentials to the script via environment variables; another possibility is to use **via-file**, which instead puts them into a file, whose name is communicated to the script. All the details are in the man page for OpenVPN. An important detail is that if using **via-env**, we need to set **script-security 3** in the server configuration file, whereas with **via-file**, **script-security 2** is enough. It's trivial to modify the scripts to read from the file if using the via-file method.
