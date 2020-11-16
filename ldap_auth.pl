@@ -1,28 +1,29 @@
 #!/usr/bin/perl
-
 use warnings;
 use strict;
 
 use Sys::Syslog qw(:standard :macros);
 use Net::LDAP;
 
-use Config::IniFiles;
+use Config::Tiny;
 use File::Basename;
 
 my $facility = LOG_AUTH;
 my $ourname = $ARGV[0];
 
-my $dirname = dirname(__FILE__);
-my $cfg = Config::IniFiles->new( -file => ${dirname}."perl-auth-ldap.conf" );
+my $path = dirname(__FILE__);
 
-my $ldapserver = $cfg->val( 'LDAP', 'LDAPSERVER' );
-my $domain = $cfg->val( 'LDAP', 'DOMAIN' );
-my $vpngroup = $cfg->val( 'LDAP', 'VPNGROUP' );
+
+my $cfg = Config::Tiny->new;
+$cfg = Config::Tiny->read( "${path}/perl-auth-ldap.conf" );
+
+my $domain = $cfg->{LDAP}->{DOMAIN};
+my $vpngroup = $cfg->{LDAP}->{VPNGROUP};
 
 # base DN for the search; adjust the code if the vpn group isn't directly in here.
-my $basedn = $cfg->val( 'LDAP', 'BASEDN' );
+my $basedn = $cfg->{LDAP}->{BASEDN};
 
-my $ldap_uri = $cfg->val( 'LDAP', 'LDAPSERVER' );
+my $ldap_uri = $cfg->{LDAP}->{LDAPSERVER};
 
 # these are passed by OpenVPN
 my $username = $ENV{'username'};
@@ -30,7 +31,7 @@ my $password = $ENV{'password'};
 
 openlog($ourname, 'nofatal,pid', $facility);
 
-if ($cfg->val( 'LDAP', 'LDAPSERVER') eq "LDAP") {
+if ($cfg->{LDAP}->{LDAPTYPE} eq "LDAP") {
 # filter
 my @filter = ( "(uid=${username})",
                "(memberOf=${vpngroup})",
@@ -38,9 +39,8 @@ my @filter = ( "(uid=${username})",
 } else {
 my @filter = ( "(sAMAccountName=${username})",
                "(memberOf=${vpngroup})",
-               '(accountStatus=active)',
+               "(accountStatus=active)",
              );
-
 }
 
 # using userAccountControl seems to work better at detecting active users
