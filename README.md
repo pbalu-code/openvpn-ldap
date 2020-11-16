@@ -16,10 +16,10 @@ So [ldap_auth.pl](https://github.com/waldner/openvpn-ldap/blob/master/ldap_auth.
 The script needs the **Net::LDAP** module to run (under Debian, it's called **libnet-ldap-perl**).
 What it does is bind against the LDAP server using the given username and password (this fails if the password or the username is not correct), and then performs an LDAP query to verify that the user is active and is a member of the specified group (that is, that the query returns one element as the result).
 
-Required rpms:
-perl-LDAP
-perl-Sys-Syslog
-perl-Config-Tiny
+**Required rpms:**
+- perl-LDAP
+- perl-Sys-Syslog
+- perl-Config-Tiny
 
 
 If you're lazy or don't want to mess around with Perl, [ldap_auth.sh](https://github.com/waldner/openvpn-ldap/blob/master/ldap_auth.sh) is the bash version of the same logic.
