@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+
 use warnings;
 use strict;
 
@@ -17,8 +18,10 @@ my $path = dirname(__FILE__);
 my $cfg = Config::Tiny->new;
 $cfg = Config::Tiny->read( "${path}/perl-auth-ldap.conf" );
 
+
 my $domain = $cfg->{LDAP}->{DOMAIN};
 my $vpngroup = $cfg->{LDAP}->{VPNGROUP};
+
 
 # base DN for the search; adjust the code if the vpn group isn't directly in here.
 my $basedn = $cfg->{LDAP}->{BASEDN};
@@ -31,15 +34,17 @@ my $password = $ENV{'password'};
 
 openlog($ourname, 'nofatal,pid', $facility);
 
+my @filter;
+
 if ($cfg->{LDAP}->{LDAPTYPE} eq "LDAP") {
 # filter
-my @filter = ( "(uid=${username})",
+	@filter = ( "(uid=${username})",
                "(memberOf=${vpngroup})",
               );
 } else {
-my @filter = ( "(sAMAccountName=${username})",
+	@filter = ( "(sAMAccountName=${username})",
                "(memberOf=${vpngroup})",
-               "(accountStatus=active)",
+               '(accountStatus=active)',
              );
 }
 
