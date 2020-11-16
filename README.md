@@ -19,7 +19,7 @@ What it does is bind against the LDAP server using the given username and passwo
 Required rpms:
 perl-LDAP
 perl-Sys-Syslog
-perl-Config-IniFiles (PowerTools module)
+perl-Config-Tiny
 
 
 If you're lazy or don't want to mess around with Perl, [ldap_auth.sh](https://github.com/waldner/openvpn-ldap/blob/master/ldap_auth.sh) is the bash version of the same logic.
